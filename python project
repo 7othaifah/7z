@@ -1,0 +1,39 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_news_articles(url):
+    # Send a GET request to the URL
+    response = requests.get(url)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse the HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Find all article elements (this will depend on the website's structure)
+        articles = soup.find_all('article')  # Adjust the tag based on the website
+        
+        news_data = []
+        
+        for article in articles:
+            # Extract the title and content (adjust selectors based on the website)
+            title = article.find('h2').get_text()  # Assuming the title is in an <h2> tag
+            content = article.find('p').get_text()  # Assuming the content is in a <p> tag
+            
+            news_data.append({
+                'title': title,
+                'content': content
+            })
+        
+        return news_data
+    else:
+        print(f"Failed to retrieve articles. Status code: {response.status_code}")
+        return []
+
+# Example usage
+url = 'https://example-news-website.com'  # Replace with the actual news website URL
+news_articles = get_news_articles(url)
+
+for article in news_articles:
+    print(f"Title: {article['title']}")
+    print(f"Content: {article['content']}\n")
